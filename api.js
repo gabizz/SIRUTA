@@ -100,7 +100,7 @@ fastify.register(mercurius, {
 // Netlify va redirecționa /api/searchLocalitati către funcție, iar prefixul asigură potrivirea.
 fastify.register(async function (fastifyInstance) {
   // Endpoint REST pentru căutarea localităților
-  fastifyInstance.get('/searchLocalitati', async (request, reply) => {
+  fastifyInstance.get('/api/searchLocalitati', async (request, reply) => {
     const { name } = request.query;
   
     if (!name) {
