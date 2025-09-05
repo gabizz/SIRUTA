@@ -7,7 +7,7 @@ package-lock.json
 # Data files
 # Fișierul sursă Excel și fișierul JSON generat
 siruta.xls
-siruta-data.json
+# siruta-data.json
 
 # Scripts
 # convert-data.js

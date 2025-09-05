@@ -2,6 +2,7 @@ const fastify = require('fastify')({ logger: true });
 const mercurius = require('mercurius');
 const fs = require('fs');
 const path = require('path');
+const fastifyStatic = require('@fastify/static');
 
 // Încarcă datele SIRUTA procesate din fișierul JSON
 const sirutaDataPath = path.join(__dirname, 'siruta-data.json');
@@ -11,6 +12,11 @@ if (!fs.existsSync(sirutaDataPath)) {
     process.exit(1);
 }
 const sirutaData = JSON.parse(fs.readFileSync(sirutaDataPath, 'utf-8'));
+
+// Servește fișiere statice din directorul 'public'
+fastify.register(fastifyStatic, {
+  root: path.join(__dirname, 'public'),
+});
 
 /**
  * Funcție reutilizabilă pentru căutarea diacritic-insensitive a localităților.
@@ -129,6 +135,11 @@ fastify.get('/api/searchLocalitati', async (request, reply) => {
   }
 
   return searchLocalitatiLogic(name);
+});
+
+// Ruta principală pentru a servi pagina web
+fastify.get('/', (request, reply) => {
+  return reply.sendFile('index.html');
 });
 
 const start = async () => {

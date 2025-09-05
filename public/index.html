@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API SIRUTA România</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+            margin: 0;
+            padding: 2rem;
+        }
+        main {
+            max-width: 800px;
+            margin: auto;
+        }
+        h1, h2, h3 {
+            color: #ffffff;
+            border-bottom: 1px solid #444;
+            padding-bottom: 0.5rem;
+        }
+        a {
+            color: #bb86fc;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #444;
+            margin: 2rem 0;
+        }
+        pre {
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #333;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #f0f0f0;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        #search-section {
+            background-color: #1e1e1e;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            border: 1px solid #333;
+        }
+        #searchForm {
+            display: flex;
+            gap: 10px;
+        }
+        #searchInput {
+            flex-grow: 1;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background-color: #333;
+            color: #e0e0e0;
+        }
+        #searchForm button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            border: none;
+            background-color: #bb86fc;
+            color: #121212;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        #searchForm button:hover {
+            background-color: #a362f7;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+        }
+        #resultsTable tbody tr:nth-child(odd) {
+            background-color: #1e1e1e;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>API SIRUTA România</h1>
+        <p>O aplicație API rapidă, construită cu <strong>Fastify</strong>, ce servește clasificarea SIRUTA a localităților din România. Proiectul oferă atât un endpoint GraphQL, cât și un endpoint REST pentru interogarea datelor.</p>
+        
+        <h2>Caracteristici</h2>
+        <ul>
+            <li><strong>Performanță:</strong> Datele sunt pre-procesate dintr-un fișier <code>.xls</code> într-un format JSON static pentru acces ultra-rapid la citire.</li>
+            <li><strong>GraphQL API:</strong> Un endpoint <code>/graphql</code> flexibil, cu interfață GraphiQL pentru explorare și testare interactivă a interogărilor.</li>
+            <li><strong>REST API:</strong> Un endpoint simplu <code>GET /api/searchLocalitati</code> pentru integrări rapide.</li>
+            <li><strong>Căutare Inteligentă:</strong> Funcționalitatea de căutare este insensibilă la diacritice și majuscule/minuscule (ex: <code>siria</code> va găsi <code>Șiria</code>).</li>
+        </ul>
+
+        <hr>
+
+        <section id="search-section">
+            <h2>Căutare Interactivă Localități</h2>
+            <form id="searchForm">
+                <input type="text" id="searchInput" placeholder="Introduceți numele localității..." required>
+                <button type="submit">Caută</button>
+            </form>
+        </section>
+
+        <div id="results">
+            <table id="resultsTable" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>SIRUTA</th>
+                        <th>Nume</th>
+                        <th>Tip UAT</th>
+                        <th>Județ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rezultatele vor fi injectate aici -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const query = document.getElementById('searchInput').value;
+            if (!query) return;
+
+            const table = document.getElementById('resultsTable');
+            const tableBody = table.querySelector('tbody');
+            tableBody.innerHTML = '<tr><td colspan="4">Se încarcă...</td></tr>';
+            table.style.display = 'table';
+
+            try {
+                const response = await fetch(`/api/searchLocalitati?name=${encodeURIComponent(query)}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `Eroare HTTP! Status: ${response.status}`);
+                }
+                const results = await response.json();
+                
+                tableBody.innerHTML = ''; // Golește mesajul de încărcare
+
+                if (results.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4">Niciun rezultat găsit.</td></tr>';
+                } else {
+                    results.forEach(loc => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${loc.siruta || ''}</td>
+                            <td>${loc.name || ''}</td>
+                            <td>${loc.tip || ''}</td>
+                            <td>${loc.parent || ''}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
+            } catch (error) {
+                console.error('Eroare la căutare:', error);
+                tableBody.innerHTML = `<tr><td colspan="4">A apărut o eroare: ${error.message}</td></tr>`;
+            }
+        });
+    </script>
+</body>
+</html>
