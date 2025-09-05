@@ -1,0 +1,16 @@
+# Dependency directories
+node_modules/
+package-lock.json
+# Log files
+*.log
+
+# Data files
+# Fișierul sursă Excel și fișierul JSON generat
+siruta.xls
+siruta-data.json
+
+# Scripts
+# convert-data.js
+
+#other temps
+.DS_Store
