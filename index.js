@@ -1,7 +1,7 @@
-const fastify = require('fastify')({ logger: true });
-const mercurius = require('mercurius');
 const fs = require('fs');
 const path = require('path');
+const fastify = require('fastify');
+const mercurius = require('mercurius');
 
 // Load data. Vercel's build process makes the project root the current working directory.
 const sirutaDataPath = path.resolve(process.cwd(), 'siruta-data.json');
@@ -79,22 +79,27 @@ const resolvers = {
   },
 };
 
-fastify.register(mercurius, {
+const app = fastify({
+  logger: true,
+});
+
+app.register(mercurius, {
   schema,
   resolvers,
   graphiql: true,
 });
 
-// REST endpoint. The path should include `/api/` as Vercel routes the full path to the function.
-fastify.get('/api/searchLocalitati', async (req, reply) => {
+app.get('/api/searchLocalitati', async (req, reply) => {
   const { name } = req.query;
-  if (!name) return reply.code(400).send({ error: 'Parametrul "name" este obligatoriu.' });
+  if (!name) {
+    return reply.code(400).send({ error: 'Parametrul "name" este obligatoriu.' });
+  }
   return searchLocalitatiLogic(name);
 });
 
 
 // Export the Fastify instance for Vercel's runtime
 module.exports = async (req, res) => {
-  await fastify.ready();
-  fastify(req, res);
+  await app.ready();
+  app.server.emit('request', req, res);
 };
