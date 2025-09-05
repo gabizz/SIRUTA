@@ -11,7 +11,9 @@
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.js" },
+    { "src": "/api/.*", "dest": "/api/index.js" },
+    { "src": "/graphql", "dest": "/api/index.js" },
+    { "src": "/graphiql", "dest": "/api/index.js" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
