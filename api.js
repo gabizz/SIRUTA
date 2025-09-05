@@ -96,17 +96,20 @@ fastify.register(mercurius, {
   graphiql: true,
 });
 
-// Endpoint REST pentru căutarea localităților
-// fastify.get('/api/searchLocalitati', async (request, reply) => {
-fastify.get('/searchLocalitati', async (request, reply) => {
-  const { name } = request.query;
-
-  if (!name) {
-    return reply.code(400).send({ error: 'Parametrul "name" este obligatoriu.' });
-  }
-
-  return searchLocalitatiLogic(name);
-});
+// Înregistrează rutele REST cu un prefix pentru a funcționa corect în mediul serverless Netlify.
+// Netlify va redirecționa /api/searchLocalitati către funcție, iar prefixul asigură potrivirea.
+fastify.register(async function (fastifyInstance) {
+  // Endpoint REST pentru căutarea localităților
+  fastifyInstance.get('/searchLocalitati', async (request, reply) => {
+    const { name } = request.query;
+  
+    if (!name) {
+      return reply.code(400).send({ error: 'Parametrul "name" este obligatoriu.' });
+    }
+  
+    return searchLocalitatiLogic(name);
+  });
+}, { prefix: '/api' });
 
 // Creăm un proxy handler pentru a fi folosit de Netlify
 const proxy = awsLambdaFastify(fastify);
