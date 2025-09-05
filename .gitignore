@@ -7,10 +7,6 @@ package-lock.json
 # Data files
 # Fișierul sursă Excel și fișierul JSON generat
 siruta.xls
-# siruta-data.json
-
-# Scripts
-# convert-data.js
 
 #other temps
 .DS_Store
