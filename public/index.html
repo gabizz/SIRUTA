@@ -101,7 +101,7 @@
 </head>
 <body>
     <main>
-        <h1>API SIRUTA România</h1>
+        <h1>API SIRUTA - UAT ROMÂNIA</h1>
         <p>O aplicație API rapidă, construită cu <strong>Fastify</strong>, ce servește clasificarea SIRUTA a localităților din România. Proiectul oferă atât un endpoint GraphQL, cât și un endpoint REST pentru interogarea datelor.</p>
         
         <h2>Caracteristici</h2>
@@ -109,13 +109,13 @@
             <li><strong>Performanță:</strong> Datele sunt pre-procesate dintr-un fișier <code>.xls</code> într-un format JSON static pentru acces ultra-rapid la citire.</li>
             <li><strong>GraphQL API:</strong> Un endpoint <code>/graphql</code> flexibil, cu interfață GraphiQL pentru explorare și testare interactivă a interogărilor.</li>
             <li><strong>REST API:</strong> Un endpoint simplu <code>GET /api/searchLocalitati</code> pentru integrări rapide.</li>
-            <li><strong>Căutare Inteligentă:</strong> Funcționalitatea de căutare este insensibilă la diacritice și majuscule/minuscule (ex: <code>siria</code> va găsi <code>Șiria</code>).</li>
+            <li><strong>Căutare inteligentă:</strong> Funcționalitatea de căutare este insensibilă la diacritice și majuscule/minuscule (ex: <code>siria</code> va găsi <code>Șiria</code>).</li>
         </ul>
 
         <hr>
 
         <section id="search-section">
-            <h2>Căutare Interactivă Localități</h2>
+            <h2>Căutare cod SIRUTA după denumirea unității administrative</h2>
             <form id="searchForm">
                 <input type="text" id="searchInput" placeholder="Introduceți numele localității..." required>
                 <button type="submit">Caută</button>
