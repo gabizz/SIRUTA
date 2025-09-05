@@ -89,10 +89,10 @@ module.exports = async (req, res) => {
       logger: true,
     });
 
-    app.register(rateLimit, {
-      max: 50, // maximum number of requests
-      timeWindow: '1 minute', // in a 1 minute window
-    });
+    // app.register(rateLimit, {
+    //   max: 50, // maximum number of requests
+    //   timeWindow: '1 minute', // in a 1 minute window
+    // });
 
     app.register(mercurius, {
       schema,
