@@ -89,7 +89,7 @@ app.register(rateLimit, {
   timeWindow: '1 minute' // in a 1 minute window
 });
 
-app.register(mercurius, {
+app.register(mercurius, { 
   schema,
   resolvers,
   graphiql: true,
