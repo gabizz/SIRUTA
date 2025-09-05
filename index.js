@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const fastify = require('fastify');
-const rateLimit = require('@fastify/rate-limit');
+// const rateLimit = require('@fastify/rate-limit');
 const mercurius = require('mercurius');
 
 // Load data. Vercel's build process makes the project root the current working directory.
@@ -84,10 +84,10 @@ const app = fastify({
   logger: true,
 });
 
-app.register(rateLimit, {
-  max: 50, // maximum number of requests
-  timeWindow: '1 minute' // in a 1 minute window
-});
+// app.register(rateLimit, {
+//   max: 50, // maximum number of requests
+//   timeWindow: '1 minute' // in a 1 minute window
+// });
 
 app.register(mercurius, { 
   schema,
