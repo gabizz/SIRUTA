@@ -107,7 +107,7 @@ fastify.register(async function (fastifyInstance) {
       return reply.code(400).send({ error: 'Parametrul "name" este obligatoriu.' });
     }
   
-    return searchLocalitatiLogic(name);
+    return searchLocalitatiLogic(name); 
   });
 }, { prefix: '/api' });
 
