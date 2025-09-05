@@ -95,6 +95,6 @@ fastify.get('/api/searchLocalitati', async (req, reply) => {
 
 // Export the Fastify instance for Vercel's runtime
 module.exports = async (req, res) => {
-    await fastify.ready();
-    fastify.server.emit('request', req, res);
+  await fastify.ready();
+  fastify(req, res);
 };
