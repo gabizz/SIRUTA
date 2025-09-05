@@ -80,35 +80,32 @@ const resolvers = {
   },
 };
 
-let app;
+const app = fastify({
+  logger: true,
+});
+
+app.register(rateLimit, {
+  max: 50, // maximum number of requests
+  timeWindow: '1 minute' // in a 1 minute window
+});
+
+app.register(mercurius, {
+  schema,
+  resolvers,
+  graphiql: true,
+});
+
+app.get('/api/searchLocalitati', async (req, reply) => {
+  const { name } = req.query;
+  if (!name) {
+    return reply.code(400).send({ error: 'Parametrul "name" este obligatoriu.' });
+  }
+  return searchLocalitatiLogic(name);
+});
+
 
 // Export the Fastify instance for Vercel's runtime
 module.exports = async (req, res) => {
-  if (!app) {
-    app = fastify({
-      logger: true,
-    });
-
-    // app.register(rateLimit, {
-    //   max: 50, // maximum number of requests
-    //   timeWindow: '1 minute', // in a 1 minute window
-    // });
-
-    app.register(mercurius, {
-      schema,
-      resolvers,
-      graphiql: true,
-    });
-
-    app.get('/api/searchLocalitati', async (req, reply) => {
-      const { name } = req.query;
-      if (!name) {
-        return reply.code(400).send({ error: 'Parametrul "name" este obligatoriu.' });
-      }
-      return searchLocalitatiLogic(name);
-    });
-
-    await app.ready();
-  }
+  await app.ready();
   app.server.emit('request', req, res);
 };
