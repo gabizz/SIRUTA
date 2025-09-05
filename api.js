@@ -97,7 +97,8 @@ fastify.register(mercurius, {
 });
 
 // Endpoint REST pentru căutarea localităților
-fastify.get('/api/searchLocalitati', async (request, reply) => {
+// fastify.get('/api/searchLocalitati', async (request, reply) => {
+fastify.get('/searchLocalitati', async (request, reply) => {
   const { name } = request.query;
 
   if (!name) {
